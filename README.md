@@ -4,6 +4,13 @@ A calm 3D learning game for one 3–4-year-old. The full brief is [GAME_DESIGN.m
 deviations are logged in [docs/DECISIONS.md](docs/DECISIONS.md). Current state: **Phase 5
 (all 16 games, polish and offline PWA done; voice not recorded, not yet deployed)**.
 
+## Play
+
+https://jurdapilleta.github.io/el-valle-magico/
+
+On a phone, open that address and choose "Add to Home Screen" (iPhone: the Share button in
+Safari; Android: the browser menu in Chrome). After the first visit it works with no connection.
+
 ## Run
 
 ```bash
@@ -18,8 +25,7 @@ Add `?perf` to the dev URL for the frame-rate overlay.
 Phone and laptop on the same Wi-Fi, then open the `Network:` URL that `npm run dev` prints
 (`http://<laptop-ip>:5173`). Tap the star, then tap the grass.
 
-Installing as an app ("Add to Home Screen") and offline use need https, so they only work from a
-hosted build (GitHub Pages, see §15.4 of the brief), not from the LAN address.
+Installing as an app and offline use need https, so use the address under Play for that.
 
 ## Voice, music and sound effects
 

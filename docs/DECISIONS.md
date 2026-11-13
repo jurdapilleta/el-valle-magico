@@ -87,9 +87,13 @@ Newest first. Each entry: what, why, and when it is revisited.
     In its place, an end-to-end test checks what that score used to: a manifest with name, display
     mode, start URL and correctly sized 192/512/maskable icons; an Apple touch icon; a registered
     service worker; and a full play session with the network off.
-11. **Not done: the GitHub Pages deploy.** The workflow is ready but stays off until the owner
-    decides where the game is hosted and creates the repository (§15.4). Installing on a phone
-    needs https, so "installable on iPhone and Android" waits on this.
+11. **Deployed to GitHub Pages** (public repository, unlisted address) at
+    https://jurdapilleta.github.io/el-valle-magico/. Every push to `main` runs lint, typecheck,
+    unit tests, the build and the end-to-end suite, and deploys only if all pass (about 13 minutes).
+    The first run passed. Checked on the live site from a headless browser: it starts, the music
+    and effects load, no request goes to any other server, and after the cache fills it reloads
+    and starts with the network off. Personal details were removed from the brief and this log
+    before the first commit. Installing on a real phone has still not been tried.
 12. **Not done in this phase:** KTX2 textures (there are no textures), replacing the code-built
     characters and animals with rigged models, real music and effects.
 
