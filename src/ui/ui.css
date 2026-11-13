@@ -1,0 +1,473 @@
+/* HUD layer (GAME_DESIGN §8.2). Pointer events pass through to the 3D world
+   except on the controls themselves. */
+.hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --pad: 14px;
+  --safe-t: calc(env(safe-area-inset-top) + var(--pad));
+  --safe-r: calc(env(safe-area-inset-right) + var(--pad));
+  --safe-b: calc(env(safe-area-inset-bottom) + var(--pad));
+  --safe-l: calc(env(safe-area-inset-left) + var(--pad));
+  font-family: ui-rounded, 'Arial Rounded MT Bold', 'Baloo 2', system-ui, sans-serif;
+  color: #5a3a6a;
+}
+
+.tap {
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 6px 14px rgba(90, 58, 106, 0.22);
+  cursor: pointer;
+  touch-action: none;
+  transition: transform 120ms ease-out;
+}
+
+/* §8.3: every tap answers with a 1.1× pop within 120 ms. */
+.tap:active {
+  transform: scale(1.1);
+}
+
+.tap svg {
+  width: 74%;
+  height: 74%;
+  pointer-events: none;
+}
+
+.round {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+}
+
+.round.big {
+  width: 128px;
+  height: 128px;
+}
+
+/* Album and repeat are secondary; still at the 96 px minimum (§8.1). */
+.round.small {
+  width: 96px;
+  height: 96px;
+}
+
+.corner {
+  position: absolute;
+}
+
+.bottom-left {
+  left: var(--safe-l);
+  bottom: var(--safe-b);
+}
+
+.bottom-right {
+  right: var(--safe-r);
+  bottom: var(--safe-b);
+}
+
+.top-left {
+  left: var(--safe-l);
+  top: var(--safe-t);
+}
+
+.panel {
+  position: absolute;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 20px rgba(90, 58, 106, 0.2);
+  pointer-events: auto;
+  animation: panel-in 180ms ease-out;
+}
+
+.panel .tap {
+  box-shadow: 0 3px 8px rgba(90, 58, 106, 0.18);
+  background: #fff;
+}
+
+.destinations {
+  left: calc(var(--safe-l) + 118px);
+  bottom: var(--safe-b);
+}
+
+.album {
+  right: calc(var(--safe-r) + 110px);
+  bottom: var(--safe-b);
+  max-width: min(70vw, 520px);
+  flex-wrap: wrap;
+}
+
+.sticker {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: none;
+  box-shadow: none;
+}
+
+.sticker svg,
+.new-sticker svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sticker.empty {
+  display: grid;
+  place-items: center;
+  opacity: 0.6;
+}
+
+.sticker.empty svg {
+  width: 60%;
+  height: 60%;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+
+.invite {
+  left: 50%;
+  bottom: calc(var(--safe-b) + 10px);
+  transform: translateX(-50%);
+  gap: 28px;
+  animation-name: invite-in;
+}
+
+.tap.yes {
+  background: #3dd68c;
+  animation: beckon 1.2s ease-in-out infinite;
+}
+
+.tap.no {
+  background: #c9b6ff;
+}
+
+.stars {
+  position: absolute;
+  top: var(--safe-t);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+
+.stars span {
+  width: 44px;
+  height: 44px;
+}
+
+.stars span.on {
+  animation: star-fill 400ms ease-out;
+}
+
+.choices {
+  position: absolute;
+  left: 50%;
+  bottom: var(--safe-b);
+  transform: translateX(-50%);
+  display: flex;
+  gap: clamp(12px, 4vw, 36px);
+  animation: panel-in 220ms ease-out;
+}
+
+.card {
+  width: clamp(120px, 24vmin, 168px);
+  height: clamp(120px, 24vmin, 168px);
+  border-radius: 28px;
+  background: #fff;
+  border: 6px solid #c9b6ff;
+  grid-template-rows: 1fr auto;
+  padding: 6px 6px 12px;
+}
+
+.numeral {
+  font-size: clamp(64px, 14vmin, 96px);
+  font-weight: 700;
+  line-height: 1;
+  color: #5a3a6a;
+}
+
+.dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  max-width: 96px;
+}
+
+.dots i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff8fd8;
+}
+
+/* Incorrect: a gentle horizontal wiggle, never a red X (§2). */
+.card.wiggle {
+  animation: wiggle 450ms ease-in-out;
+}
+
+.card.hint-1 {
+  animation: wiggle 600ms ease-in-out 2;
+}
+
+.card.hint-2,
+.card.hint-3 {
+  border-color: #ffd972;
+  box-shadow:
+    0 0 0 8px rgba(255, 217, 114, 0.55),
+    0 6px 14px rgba(90, 58, 106, 0.22);
+  animation: glow 900ms ease-in-out infinite;
+}
+
+.card.hint-2::before,
+.card.hint-3::before {
+  content: '';
+  position: absolute;
+  top: -44px;
+  border: 18px solid transparent;
+  border-top-color: #ffd972;
+  animation: arrow-bob 700ms ease-in-out infinite;
+}
+
+.card.correct {
+  border-color: #3dd68c;
+  animation: correct-pop 500ms ease-out;
+}
+
+.card.faded {
+  opacity: 0.35;
+}
+
+.card {
+  position: relative;
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.confetti i {
+  position: absolute;
+  top: -20px;
+  width: 12px;
+  height: 18px;
+  border-radius: 3px;
+  animation: confetti-fall 2s ease-in forwards;
+}
+
+.new-sticker {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: min(44vmin, 240px);
+  aspect-ratio: 1;
+  animation: sticker-drop 1.8s ease-in-out forwards;
+  filter: drop-shadow(0 10px 18px rgba(90, 58, 106, 0.3));
+}
+
+/* Dev aid for lines with no recording yet; tucked in the free top-right corner. */
+.caption {
+  position: absolute;
+  top: var(--safe-t);
+  right: var(--safe-r);
+  max-width: min(34vw, 300px);
+  padding: 6px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  text-align: center;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    scale: 0.85;
+  }
+}
+
+@keyframes invite-in {
+  from {
+    opacity: 0;
+    translate: 0 30px;
+  }
+}
+
+@keyframes beckon {
+  50% {
+    scale: 1.08;
+  }
+}
+
+@keyframes star-fill {
+  0% {
+    scale: 0.4;
+  }
+  60% {
+    scale: 1.35;
+  }
+}
+
+@keyframes wiggle {
+  20%,
+  60% {
+    translate: -10px 0;
+  }
+  40%,
+  80% {
+    translate: 10px 0;
+  }
+}
+
+@keyframes glow {
+  50% {
+    scale: 1.06;
+  }
+}
+
+@keyframes arrow-bob {
+  50% {
+    translate: 0 -8px;
+  }
+}
+
+@keyframes correct-pop {
+  40% {
+    scale: 1.18;
+  }
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translate(var(--drift), 105vh) rotate(540deg);
+  }
+}
+
+@keyframes sticker-drop {
+  0% {
+    transform: translate(-50%, -160%) scale(0.4) rotate(-20deg);
+  }
+  35%,
+  65% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  100% {
+    /* Flies toward the album corner. */
+    transform: translate(40vw, 45vh) scale(0.15);
+    opacity: 0.4;
+  }
+}
+
+/* Portrait: anchor the choices above the corner buttons (§4.3). */
+@media (orientation: portrait) {
+  .choices {
+    bottom: calc(var(--safe-b) + 124px);
+  }
+
+  .destinations {
+    left: var(--safe-l);
+    bottom: calc(var(--safe-b) + 118px);
+  }
+
+  .album {
+    right: var(--safe-r);
+    bottom: calc(var(--safe-b) + 110px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti i:nth-child(n + 13) {
+    display: none;
+  }
+
+  .tap.yes,
+  .card.hint-2,
+  .card.hint-3 {
+    animation: none;
+  }
+}
+
+/* ---- Phase 2: sticker book pages and the zone loading screen ---- */
+
+.album {
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.album-page {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  animation: page-turn 260ms ease-out;
+}
+
+.album .sticker {
+  width: clamp(72px, 15vmin, 120px);
+  height: clamp(72px, 15vmin, 120px);
+}
+
+.album .turn {
+  flex: none;
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(#bfe3ff, #fff1f8);
+  pointer-events: auto;
+  /* Only appears if loading takes a moment; a cached zone never flashes it. */
+  animation: loading-in 200ms ease-out 250ms backwards;
+}
+
+.trot {
+  width: min(34vmin, 180px);
+  aspect-ratio: 1;
+  animation: trot 500ms ease-in-out infinite alternate;
+}
+
+.trot svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes page-turn {
+  from {
+    opacity: 0;
+    transform: perspective(600px) rotateY(-50deg);
+  }
+}
+
+@keyframes loading-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes trot {
+  from {
+    transform: translateY(6px) rotate(-5deg);
+  }
+  to {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trot,
+  .album-page {
+    animation: none;
+  }
+}

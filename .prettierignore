@@ -1,0 +1,12 @@
+dist
+dev-dist
+node_modules
+package-lock.json
+GAME_DESIGN.md
+playwright-report
+test-results
+tools/assets/raw
+public/models/manifest.json
+tools/audio/raw
+docs/voice-script.md
+public/audio

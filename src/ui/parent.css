@@ -1,0 +1,259 @@
+/* Parent gate, parent area and rest (GAME_DESIGN §7.6, §8.6). */
+
+.parent-button {
+  position: absolute;
+  top: var(--safe-t);
+  right: var(--safe-r);
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  color: rgba(90, 58, 106, 0.45);
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.parent-button.holding {
+  color: rgba(90, 58, 106, 0.9);
+  transition: color 3s linear;
+}
+
+.parent {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l);
+  background: #fbf7ff;
+  pointer-events: auto;
+  touch-action: pan-y;
+  user-select: text;
+  -webkit-user-select: text;
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.parent button,
+.parent select,
+.parent input {
+  font: inherit;
+  color: inherit;
+}
+
+.parent button {
+  padding: 8px 14px;
+  border: 1px solid #c9b6ff;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.parent button.ok {
+  background: #5a3a6a;
+  border-color: #5a3a6a;
+  color: #fff;
+}
+
+.parent button.danger {
+  background: #c0392b;
+  border-color: #c0392b;
+  color: #fff;
+}
+
+.parent button.link {
+  border: none;
+  background: none;
+  text-decoration: underline;
+}
+
+.gate {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+}
+
+.gate .question {
+  margin: 0;
+  font-size: 22px;
+}
+
+.gate .typed {
+  min-width: 96px;
+  padding: 4px 12px;
+  border-bottom: 2px solid #5a3a6a;
+  font-size: 28px;
+  text-align: center;
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 64px);
+  gap: 8px;
+}
+
+.keypad button {
+  height: 52px;
+  font-size: 20px;
+}
+
+.area {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+
+.area > * {
+  width: 100%;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.area header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.area h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.area h3 {
+  margin: 18px 0 6px;
+  font-size: 17px;
+}
+
+.area p {
+  margin: 6px 0;
+}
+
+.area label {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.area input[type='text'],
+.area select {
+  padding: 6px 8px;
+  border: 1px solid #c9b6ff;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.objectives,
+.known {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.objectives li {
+  display: grid;
+  grid-template-columns: 1fr 120px 96px;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.bar {
+  height: 10px;
+  border-radius: 5px;
+  background: #e9e1f5;
+  overflow: hidden;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: #9b6bff;
+}
+
+.status {
+  font-size: 13px;
+  color: #7a6a86;
+}
+
+.status.done {
+  color: #1e8a55;
+  font-weight: 600;
+}
+
+.known {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.known li {
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: #eee9f4;
+  color: #8c8196;
+  font-size: 14px;
+}
+
+.known li.seen {
+  background: #fff1c9;
+  color: #6b5516;
+}
+
+.known li.yes {
+  background: #c9f2dc;
+  color: #14613a;
+}
+
+.credits {
+  font-size: 13px;
+  color: #7a6a86;
+}
+
+.rest {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(40, 28, 70, 0.62);
+  pointer-events: auto;
+  animation: rest-in 1.5s ease-out;
+}
+
+.doze {
+  width: min(40vmin, 220px);
+  aspect-ratio: 1;
+  opacity: 0.9;
+  animation: doze 3.2s ease-in-out infinite alternate;
+}
+
+.doze svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes rest-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes doze {
+  from {
+    transform: rotate(-8deg) scale(0.97);
+  }
+  to {
+    transform: rotate(-3deg) scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doze {
+    animation: none;
+  }
+}

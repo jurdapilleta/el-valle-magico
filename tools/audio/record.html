@@ -1,0 +1,217 @@
+<!doctype html>
+<!--
+  Voice recorder (GAME_DESIGN §11.1, option A). Chrome or Edge on the laptop:
+
+    npm run dev   →   http://localhost:5173/tools/audio/record.html
+
+  1. Pulsa "Elegir carpeta" y selecciona  tools/audio/raw/voice/es  (créala si no existe).
+  2. Graba cada frase: un clic para empezar, otro para parar.
+  3. Cuando termines una tanda:  npm run audio   y recarga el juego.
+
+  Each take is saved there as <line id>.webm. Nothing is uploaded anywhere.
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Grabadora de voces · El Valle Mágico</title>
+    <style>
+      body {
+        font:
+          16px/1.4 system-ui,
+          sans-serif;
+        max-width: 780px;
+        margin: 24px auto;
+        padding: 0 16px;
+        color: #5a3a6a;
+      }
+      button,
+      select {
+        font: inherit;
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 1px solid #c9b6ff;
+        background: #fff;
+        cursor: pointer;
+      }
+      button.rec {
+        background: #ff8fd8;
+        color: #fff;
+        border-color: #ff8fd8;
+      }
+      .bar {
+        position: sticky;
+        top: 0;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 10px 0;
+        background: #fff;
+        border-bottom: 1px solid #eee;
+      }
+      h2 {
+        margin: 22px 0 4px;
+        font-size: 17px;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      li {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+      li.done .text::before {
+        content: '✔ ';
+        color: #1e8a55;
+      }
+      code {
+        display: block;
+        font-size: 12px;
+        opacity: 0.6;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Grabadora de voces</h1>
+    <p>
+      Voz cálida y tranquila, frases cortas, sonriendo. Los sonidos de animales se imitan con la
+      voz. Si una toma no te gusta, grábala otra vez: la nueva sustituye a la anterior.
+    </p>
+    <div class="bar">
+      <button id="pick">Elegir carpeta</button>
+      <select id="who"></select>
+      <label><input type="checkbox" id="pending" /> Solo las que faltan</label>
+      <span id="status">Sin carpeta</span>
+    </div>
+    <div id="lines"></div>
+
+    <script type="module">
+      import { VOICE_ES } from '/src/i18n/voice.es.ts';
+      import { bankOf, speakerOf, SPEAKER_NAMES } from '/src/i18n/voiceBanks.ts';
+
+      const EXTENSIONS = ['webm', 'wav', 'mp3', 'm4a', 'ogg'];
+      let dir = null;
+      let active = null;
+      const taken = new Map(); // line id → file name
+      const status = document.getElementById('status');
+      const who = document.getElementById('who');
+      const pending = document.getElementById('pending');
+      const container = document.getElementById('lines');
+      const rows = [];
+
+      for (const [speaker, name] of Object.entries(SPEAKER_NAMES)) {
+        who.append(new Option(name, speaker));
+      }
+
+      function refresh() {
+        let done = 0;
+        let total = 0;
+        for (const row of rows) {
+          const mine = row.speaker === who.value;
+          const has = taken.has(row.id);
+          row.li.classList.toggle('done', has);
+          row.li.classList.toggle('hidden', !mine || (pending.checked && has));
+          if (mine) {
+            total++;
+            if (has) done++;
+          }
+        }
+        for (const section of container.querySelectorAll('section')) {
+          section.classList.toggle('hidden', !section.querySelector('li:not(.hidden)'));
+        }
+        status.textContent = dir ? `${done} de ${total} grabadas` : 'Sin carpeta';
+      }
+      who.onchange = refresh;
+      pending.onchange = refresh;
+
+      document.getElementById('pick').onclick = async () => {
+        dir = await window.showDirectoryPicker({ mode: 'readwrite' });
+        taken.clear();
+        for await (const [name, handle] of dir.entries()) {
+          const dot = name.lastIndexOf('.');
+          if (handle.kind === 'file' && EXTENSIONS.includes(name.slice(dot + 1))) {
+            taken.set(name.slice(0, dot), name);
+          }
+        }
+        refresh();
+      };
+
+      const sections = new Map();
+      for (const [id, text] of Object.entries(VOICE_ES)) {
+        const speaker = speakerOf(id);
+        const key = `${speaker}/${bankOf(id)}`;
+        if (!sections.has(key)) {
+          const section = document.createElement('section');
+          const title = document.createElement('h2');
+          title.textContent = bankOf(id);
+          const list = document.createElement('ul');
+          section.append(title, list);
+          container.append(section);
+          sections.set(key, list);
+        }
+        const li = document.createElement('li');
+        const label = document.createElement('div');
+        label.className = 'text';
+        label.textContent = text;
+        const code = document.createElement('code');
+        code.textContent = id;
+        label.append(code);
+        const rec = document.createElement('button');
+        rec.textContent = 'Grabar';
+        const play = document.createElement('button');
+        play.textContent = 'Oír';
+        li.append(label, rec, play);
+        sections.get(key).append(li);
+        rows.push({ id, speaker, li });
+
+        rec.onclick = async () => {
+          if (!dir) return alert('Primero elige la carpeta.');
+          if (active) {
+            if (active.id === id) active.recorder.stop();
+            return;
+          }
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+          const chunks = [];
+          recorder.ondataavailable = (e) => chunks.push(e.data);
+          recorder.onstop = async () => {
+            stream.getTracks().forEach((t) => t.stop());
+            // A new take replaces an older one, whatever format that was.
+            const old = taken.get(id);
+            const name = `${id}.webm`;
+            if (old && old !== name) await dir.removeEntry(old);
+            const handle = await dir.getFileHandle(name, { create: true });
+            const w = await handle.createWritable();
+            await w.write(new Blob(chunks, { type: 'audio/webm' }));
+            await w.close();
+            taken.set(id, name);
+            rec.textContent = 'Grabar';
+            rec.classList.remove('rec');
+            active = null;
+            refresh();
+          };
+          recorder.start();
+          active = { id, recorder };
+          rec.textContent = 'Parar';
+          rec.classList.add('rec');
+        };
+
+        play.onclick = async () => {
+          if (!dir || !taken.has(id)) return;
+          const file = await (await dir.getFileHandle(taken.get(id))).getFile();
+          new Audio(URL.createObjectURL(file)).play();
+        };
+      }
+      refresh();
+    </script>
+  </body>
+</html>

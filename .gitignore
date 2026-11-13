@@ -1,0 +1,12 @@
+node_modules
+dist
+dev-dist
+playwright-report
+test-results
+.DS_Store
+*.local
+tools/assets/raw
+# Audio sources: personal voice takes and regenerable placeholders (public/audio is what ships)
+tools/audio/raw
+tools/audio/voices.json
+.claude

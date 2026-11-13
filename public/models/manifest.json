@@ -1,0 +1,165 @@
+{
+  "generated": "2026-11-12",
+  "models": {
+    "tree_default": {
+      "file": "models/nature/tree_default.glb",
+      "triangles": 114,
+      "bytes": 9428
+    },
+    "tree_oak": {
+      "file": "models/nature/tree_oak.glb",
+      "triangles": 196,
+      "bytes": 14644
+    },
+    "tree_fat": {
+      "file": "models/nature/tree_fat.glb",
+      "triangles": 50,
+      "bytes": 5576
+    },
+    "tree_detailed": {
+      "file": "models/nature/tree_detailed.glb",
+      "triangles": 402,
+      "bytes": 31412
+    },
+    "tree_pineRoundA": {
+      "file": "models/nature/tree_pineRoundA.glb",
+      "triangles": 204,
+      "bytes": 14488
+    },
+    "tree_pineTallA": {
+      "file": "models/nature/tree_pineTallA.glb",
+      "triangles": 78,
+      "bytes": 7200
+    },
+    "tree_pineSmallA": {
+      "file": "models/nature/tree_pineSmallA.glb",
+      "triangles": 164,
+      "bytes": 12820
+    },
+    "tree_pineDefaultA": {
+      "file": "models/nature/tree_pineDefaultA.glb",
+      "triangles": 230,
+      "bytes": 17220
+    },
+    "plant_bush": {
+      "file": "models/nature/plant_bush.glb",
+      "triangles": 32,
+      "bytes": 4396
+    },
+    "plant_bushLarge": {
+      "file": "models/nature/plant_bushLarge.glb",
+      "triangles": 60,
+      "bytes": 6436
+    },
+    "plant_flatTall": {
+      "file": "models/nature/plant_flatTall.glb",
+      "triangles": 32,
+      "bytes": 3480
+    },
+    "flower_redA": {
+      "file": "models/nature/flower_redA.glb",
+      "triangles": 76,
+      "bytes": 7104
+    },
+    "flower_yellowA": {
+      "file": "models/nature/flower_yellowA.glb",
+      "triangles": 76,
+      "bytes": 7120
+    },
+    "flower_purpleA": {
+      "file": "models/nature/flower_purpleA.glb",
+      "triangles": 76,
+      "bytes": 7112
+    },
+    "grass": {
+      "file": "models/nature/grass.glb",
+      "triangles": 132,
+      "bytes": 11496
+    },
+    "grass_large": {
+      "file": "models/nature/grass_large.glb",
+      "triangles": 224,
+      "bytes": 18504
+    },
+    "rock_smallA": {
+      "file": "models/nature/rock_smallA.glb",
+      "triangles": 16,
+      "bytes": 3044
+    },
+    "rock_largeA": {
+      "file": "models/nature/rock_largeA.glb",
+      "triangles": 80,
+      "bytes": 7552
+    },
+    "rock_tallA": {
+      "file": "models/nature/rock_tallA.glb",
+      "triangles": 136,
+      "bytes": 12072
+    },
+    "stone_tallA": {
+      "file": "models/nature/stone_tallA.glb",
+      "triangles": 136,
+      "bytes": 11644
+    },
+    "mushroom_red": {
+      "file": "models/nature/mushroom_red.glb",
+      "triangles": 48,
+      "bytes": 6364
+    },
+    "mushroom_redGroup": {
+      "file": "models/nature/mushroom_redGroup.glb",
+      "triangles": 144,
+      "bytes": 14960
+    },
+    "mushroom_tanGroup": {
+      "file": "models/nature/mushroom_tanGroup.glb",
+      "triangles": 144,
+      "bytes": 14956
+    },
+    "stump_round": {
+      "file": "models/nature/stump_round.glb",
+      "triangles": 56,
+      "bytes": 5644
+    },
+    "log": {
+      "file": "models/nature/log.glb",
+      "triangles": 200,
+      "bytes": 14288
+    },
+    "lily_large": {
+      "file": "models/nature/lily_large.glb",
+      "triangles": 86,
+      "bytes": 8044
+    },
+    "lily_small": {
+      "file": "models/nature/lily_small.glb",
+      "triangles": 52,
+      "bytes": 5664
+    },
+    "canoe": {
+      "file": "models/nature/canoe.glb",
+      "triangles": 200,
+      "bytes": 15780
+    },
+    "crops_cornStageD": {
+      "file": "models/nature/crops_cornStageD.glb",
+      "triangles": 300,
+      "bytes": 29316
+    },
+    "crops_wheatStageB": {
+      "file": "models/nature/crops_wheatStageB.glb",
+      "triangles": 360,
+      "bytes": 30040
+    },
+    "fence_simple": {
+      "file": "models/nature/fence_simple.glb",
+      "triangles": 64,
+      "bytes": 5712
+    },
+    "statue_column": {
+      "file": "models/nature/statue_column.glb",
+      "triangles": 122,
+      "bytes": 10472
+    }
+  }
+}
